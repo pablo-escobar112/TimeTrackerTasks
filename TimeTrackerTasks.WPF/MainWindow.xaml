@@ -1,0 +1,120 @@
+﻿<Window x:Class="TimeTrackerTasks.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TimeTracker Tasks - Трекер задач и времени" 
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Панель поиска и фильтров -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Поиск:" 
+                       VerticalAlignment="Center" 
+                       Margin="0,0,5,0"
+                       FontWeight="Bold"/>
+
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                     Width="200" 
+                     Margin="0,0,20,0"
+                     ToolTip="Поиск по названию задачи"/>
+
+            <TextBlock Text="Фильтр:" 
+                       VerticalAlignment="Center" 
+                       Margin="0,0,5,0"
+                       FontWeight="Bold"/>
+
+            <ComboBox ItemsSource="{Binding Filters}" 
+                      SelectedItem="{Binding CurrentFilter}"
+                      Width="120"
+                      ToolTip="Фильтр по статусу задач"/>
+        </StackPanel>
+
+        <!-- Статистика -->
+        <TextBlock Grid.Row="1" 
+                   Text="{Binding FilteredTasks.Count, StringFormat='Найдено задач: {0}'}" 
+                   Margin="0,0,0,10"
+                   FontStyle="Italic"/>
+
+        <!-- Список задач -->
+        <DataGrid ItemsSource="{Binding FilteredTasks}" 
+                  SelectedItem="{Binding SelectedTask}"
+                  AutoGenerateColumns="False" 
+                  Grid.Row="2"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  SelectionMode="Single">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название" 
+                                  Binding="{Binding Title}" 
+                                  Width="*"/>
+                <DataGridCheckBoxColumn Header="Выполнена" 
+                                      Binding="{Binding IsCompleted}" 
+                                      Width="80"/>
+                <DataGridTextColumn Header="Дата создания" 
+                                  Binding="{Binding CreatedDate, StringFormat=dd.MM.yyyy}" 
+                                  Width="100"/>
+                <DataGridTextColumn Header="Срок выполнения" 
+                                  Binding="{Binding DueDate, StringFormat=dd.MM.yyyy}" 
+                                  Width="110"/>
+                <DataGridTextColumn Header="Затрачено минут" 
+                                  Binding="{Binding TimeSpentMinutes}" 
+                                  Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Панель управления -->
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0,10,0,0">
+            <!-- Кнопки управления задачами -->
+            <Button Content="➕ Добавить задачу" 
+                    Command="{Binding AddTaskCommand}" 
+                    Margin="0,0,5,0"
+                    Padding="10,5"
+                    ToolTip="Создать новую задачу"/>
+
+            <Button Content="✏️ Редактировать" 
+                    Command="{Binding EditTaskCommand}" 
+                    Margin="5,0"
+                    Padding="10,5"
+                    ToolTip="Редактировать выбранную задачу"/>
+
+            <Button Content="🗑️ Удалить" 
+                    Command="{Binding DeleteTaskCommand}" 
+                    Margin="5,0"
+                    Padding="10,5"
+                    ToolTip="Удалить выбранную задачу"/>
+
+            <Button Content="✅ Выполнена" 
+                    Command="{Binding MarkAsCompletedCommand}" 
+                    Margin="5,0"
+                    Padding="10,5"
+                    ToolTip="Отметить задачу как выполненную"/>
+
+            <!-- Добавление времени -->
+            <Separator Margin="20,0" Width="2" Background="Gray"/>
+
+            <TextBlock Text="Добавить время (мин):" 
+                       VerticalAlignment="Center" 
+                       Margin="10,0,5,0"
+                       FontWeight="Bold"/>
+
+            <TextBox Text="{Binding TimeToAdd, UpdateSourceTrigger=PropertyChanged}" 
+                     Width="60" 
+                     Margin="0,0,5,0"
+                     ToolTip="Введите количество минут"/>
+
+            <Button Content="⏱️ Добавить время" 
+                    Command="{Binding AddTimeCommand}"
+                    Padding="10,5"
+                    ToolTip="Добавить время к выбранной задаче"/>
+        </StackPanel>
+    </Grid>
+</Window>
